@@ -10,7 +10,7 @@
 
 #include "GPIO_driver.h"
 
-void GPIO_PeriClockControl(GPIO_Regs *pGPIOx, uint8_t ENORDI)
+void GPIO_PeriClockControl(GPIO_Regdef_t *pGPIOx, uint8_t ENORDI)
 {
 	if (ENORDI==ENABLE)
 	{
@@ -92,9 +92,10 @@ void GPIO_PeriClockControl(GPIO_Regs *pGPIOx, uint8_t ENORDI)
 	}
 }
 
-void GPIO_Init(GPIO_Handle *Handle)
+void GPIO_Init(GPIO_Handle_t *Handle)
 {
 	uint32_t temp=0;
+	GPIO_PeriClockControl(Handle->GPIOx,ENABLE);
 	//setting the mode of a peripheral
 	temp=Handle->Config.GPIO_Mode<<(2*Handle->Config.GPIO_PinNumber);
 	Handle->GPIOx->GPIO_MODER&=~(3<<(2*Handle->Config.GPIO_PinNumber));	//Clearing the necessary bitfields
@@ -138,7 +139,7 @@ void GPIO_Init(GPIO_Handle *Handle)
 }
 
 
-void GPIO_DeInit(GPIO_Regs *pGPIOx)
+void GPIO_DeInit(GPIO_Regdef_t *pGPIOx)
 {
 	uint32_t *pReset=(uint32_t *)RCC_AHB1RESET;
 	if(pGPIOx==GPIOA)
@@ -190,19 +191,19 @@ void GPIO_DeInit(GPIO_Regs *pGPIOx)
 }
 
 
-uint8_t ReadFromInputPin(GPIO_Regs *pGPIOx, uint8_t PinNumber)
+uint8_t ReadFromInputPin(GPIO_Regdef_t *pGPIOx, uint8_t PinNumber)
 {
 	uint8_t data=(uint8_t)(pGPIOx->GPIO_IDR>>PinNumber)&(0x00000001);
 	return data;
 }
 
-uint16_t ReadFromInputPort(GPIO_Regs *pGPIOx, uint8_t PinNumber)
+uint16_t ReadFromInputPort(GPIO_Regdef_t *pGPIOx, uint8_t PinNumber)
 {
 	uint16_t data=pGPIOx->GPIO_IDR;
 	return data;
 }
 
-void WriteToOutputPin(GPIO_Regs *pGPIOx,uint8_t PinNumber, uint8_t val)
+void WriteToOutputPin(GPIO_Regdef_t *pGPIOx,uint8_t PinNumber, uint8_t val)
 {
 	if(val==GPIO_PIN_SET)
 	{
@@ -214,7 +215,7 @@ void WriteToOutputPin(GPIO_Regs *pGPIOx,uint8_t PinNumber, uint8_t val)
 	}
 }
 
-void WriteToOutputPort(GPIO_Regs *pGPIOx,uint16_t val)
+void WriteToOutputPort(GPIO_Regdef_t *pGPIOx,uint16_t val)
 {
 	pGPIOx->GPIO_ODR=val;
 }

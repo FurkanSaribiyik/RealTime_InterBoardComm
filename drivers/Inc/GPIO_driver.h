@@ -93,50 +93,50 @@
 #define GPIO_ALT_FUNC15 15
 
 typedef struct{
-	volatile uint32_t GPIO_MODER;
-	volatile uint32_t GPIO_OTYPER;
-	volatile uint32_t GPIO_OSPEEDR;
-	volatile uint32_t GPIO_PUPDR;
-	volatile uint32_t GPIO_IDR;
-	volatile uint32_t GPIO_ODR;
-	volatile uint32_t GPIO_BSRR;;
-	volatile uint32_t GPIO_LCKR;
-	volatile uint32_t GPIO_AFRL;
-	volatile uint32_t GPIO_AFRH;
-}GPIO_Regs;
+	uint32_t GPIO_MODER;
+	uint32_t GPIO_OTYPER;
+	uint32_t GPIO_OSPEEDR;
+	uint32_t GPIO_PUPDR;
+	uint32_t GPIO_IDR;
+	uint32_t GPIO_ODR;
+	uint32_t GPIO_BSRR;;
+	uint32_t GPIO_LCKR;
+	uint32_t GPIO_AFRL;
+	uint32_t GPIO_AFRH;
+}GPIO_Regdef_t;
 
-#define GPIOA	((GPIO_Regs*)GPIOA_BASEADDR)
-#define GPIOB	((GPIO_Regs*)GPIOB_BASEADDR)
-#define GPIOC	((GPIO_Regs*)GPIOC_BASEADDR)
-#define GPIOD	((GPIO_Regs*)GPIOD_BASEADDR)
-#define GPIOE	((GPIO_Regs*)GPIOE_BASEADDR)
-#define GPIOF	((GPIO_Regs*)GPIOF_BASEADDR)
-#define GPIOG	((GPIO_Regs*)GPIOG_BASEADDR)
-#define GPIOH	((GPIO_Regs*)GPIOH_BASEADDR)
-#define GPIOI	((GPIO_Regs*)GPIOI_BASEADDR)
+#define GPIOA	((GPIO_Regdef_t*)GPIOA_BASEADDR)
+#define GPIOB	((GPIO_Regdef_t*)GPIOB_BASEADDR)
+#define GPIOC	((GPIO_Regdef_t*)GPIOC_BASEADDR)
+#define GPIOD	((GPIO_Regdef_t*)GPIOD_BASEADDR)
+#define GPIOE	((GPIO_Regdef_t*)GPIOE_BASEADDR)
+#define GPIOF	((GPIO_Regdef_t*)GPIOF_BASEADDR)
+#define GPIOG	((GPIO_Regdef_t*)GPIOG_BASEADDR)
+#define GPIOH	((GPIO_Regdef_t*)GPIOH_BASEADDR)
+#define GPIOI	((GPIO_Regdef_t*)GPIOI_BASEADDR)
 
 
 typedef struct{
-	volatile uint8_t GPIO_PinNumber;
-	volatile uint8_t GPIO_Mode;
-	volatile uint8_t GPIO_OutputType;
-	volatile uint8_t GPIO_OutputSpeed;
-	volatile uint8_t GPIO_PUPD;
-	volatile uint8_t GPIO_AlternateFunc;
-}GPIO_Config;
+	 uint8_t GPIO_PinNumber;
+	 uint8_t GPIO_Mode;
+	 uint8_t GPIO_OutputType;
+	 uint8_t GPIO_OutputSpeed;
+	 uint8_t GPIO_PUPD;
+	 uint8_t GPIO_AlternateFunc;
+}GPIO_Config_t;
 
 typedef struct{
-	volatile GPIO_Regs* GPIOx;
-	volatile GPIO_Config Config;
-}GPIO_Handle;
+	GPIO_Regdef_t* GPIOx;
+	GPIO_Config_t Config;
+}GPIO_Handle_t;
 
-void GPIO_PeriClockControl(GPIO_Regs *pGPIOx, uint8_t ENORDI);
-void GPIO_Init(GPIO_Handle *Handle);
-void GPIO_DeInit(GPIO_Regs *pGPIOx);
-uint8_t ReadFromInputPin(GPIO_Regs *pGPIOx, uint8_t PinNumber);
-uint16_t ReadFromInputPort(GPIO_Regs *pGPIOx, uint8_t PinNumber);
-void WriteToOutputPin(GPIO_Regs *pGPIOx,uint8_t PinNumber, uint8_t val);
-void WriteToOutputPort(GPIO_Regs *pGPIOx,uint16_t val);
+void GPIO_PeriClockControl(GPIO_Regdef_t *pGPIOx, uint8_t ENORDI);
+void GPIO_Init(GPIO_Handle_t *Handle);
+void GPIO_DeInit(GPIO_Regdef_t *pGPIOx);
+uint8_t ReadFromInputPin(GPIO_Regdef_t *pGPIOx, uint8_t PinNumber);
+uint16_t ReadFromInputPort(GPIO_Regdef_t *pGPIOx, uint8_t PinNumber);
+void WriteToOutputPin(GPIO_Regdef_t *pGPIOx,uint8_t PinNumber, uint8_t val);
+void WriteToOutputPort(GPIO_Regdef_t *pGPIOx,uint16_t val);
 
-
+#include "i2c_driver.h"
 #endif /* GPIO_DRIVER_H_ */

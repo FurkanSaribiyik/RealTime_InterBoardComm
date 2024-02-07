@@ -21,25 +21,42 @@
 
 #include "GPIO_driver.h"
 
+uint8_t TxBUFFER[]="I2C TX FUNCTIONALITY";
+uint8_t RxBUFFER[128];
+uint8_t request_datasize=11;
+uint8_t targetaddr=0x51;
+
 int main(void)
 {
 
-	volatile GPIO_Handle Handle;
-	Handle.GPIOx=GPIOD;
-	Handle.Config.GPIO_PinNumber=12;
-	Handle.Config.GPIO_Mode=GPIO_MODE_OUTPUT;
-	Handle.Config.GPIO_OutputSpeed=GPIO_OSPEED_MED;
-	Handle.Config.GPIO_OutputType=GPIO_OTYPE_PP;
-	Handle.Config.GPIO_PUPD=GPIO_PUPD_NO_PUPD;
-	GPIO_PeriClockControl((GPIO_Regs*)(Handle.GPIOx), ENABLE);
-	GPIO_Init((GPIO_Handle*)&Handle);
-	WriteToOutputPin((GPIO_Regs*)(Handle.GPIOx),12,GPIO_PIN_SET);
-	for(int i=0; i<=250000;i++);
-	GPIO_DeInit(GPIOD);
-	GPIO_PeriClockControl((GPIO_Regs*)(Handle.GPIOx), ENABLE);
-	GPIO_Init((GPIO_Handle*)&Handle);
-	WriteToOutputPin((GPIO_Regs*)(Handle.GPIOx),12,GPIO_PIN_SET);
-	for(int i=0; i<=250000;i++);
-	GPIO_DeInit(GPIOD);
-	for(;;);
+	GPIO_Handle_t Handle;
+	Handle.GPIOx=GPIOA;
+	Handle.Config.GPIO_PinNumber=0;
+	Handle.Config.GPIO_Mode=GPIO_MODE_INPUT;
+	Handle.Config.GPIO_OutputSpeed=GPIO_OSPEED_HIGH;
+	Handle.Config.GPIO_PUPD=GPIO_PUPD_PD;
+	GPIO_Init(&Handle);
+
+	I2C_Handle_t I2C_Handle;
+	I2C_Handle.I2Cx=I2C1;
+	I2C_Handle.Config.I2C_ACKControl=I2C_ACK_ENABLE;
+	I2C_Handle.Config.I2C_DeviceAddress=0x17;
+	I2C_Handle.Config.I2C_FMDutyCycle=I2C_FM_DUTY_2;
+	I2C_Handle.Config.I2C_SCL_SPEED=I2C_SCL_SPEED_SM;
+	I2C_Init(&I2C_Handle);
+	I2C1_GPIOInit();
+
+	while(1)
+	{
+		while(!ReadFromInputPin(Handle.GPIOx, 0));
+		for(int i=0;i<=200000;i++);
+		I2C_master_senddata(I2C_Handle.I2Cx, TxBUFFER,strlen((char*)TxBUFFER), targetaddr,I2C_REP_START_ENABLE);
+		printf("DATA WAS SENT %s\n",TxBUFFER);
+
+		I2C_master_receivedata(I2C_Handle.I2Cx, RxBUFFER,request_datasize, targetaddr,I2C_REP_START_DISABLE);
+
+		RxBUFFER[request_datasize]='\0';
+		printf("Data Received: %s", RxBUFFER);
+
+	}
 }
