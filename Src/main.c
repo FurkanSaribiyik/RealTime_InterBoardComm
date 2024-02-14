@@ -23,13 +23,15 @@
 
 uint8_t TxBUFFER[]="I2C TX FUNCTIONALITY";
 uint8_t RxBUFFER[128];
-uint8_t request_datasize=11;
+uint8_t request_datasize=10;
 uint8_t targetaddr=0x51;
+GPIO_Handle_t Handle;
+I2C_Handle_t I2C_Handle;
+uint8_t RxCmplt=RESET;
 
 int main(void)
 {
 
-	GPIO_Handle_t Handle;
 	Handle.GPIOx=GPIOA;
 	Handle.Config.GPIO_PinNumber=0;
 	Handle.Config.GPIO_Mode=GPIO_MODE_INPUT;
@@ -37,26 +39,112 @@ int main(void)
 	Handle.Config.GPIO_PUPD=GPIO_PUPD_PD;
 	GPIO_Init(&Handle);
 
-	I2C_Handle_t I2C_Handle;
 	I2C_Handle.I2Cx=I2C1;
 	I2C_Handle.Config.I2C_ACKControl=I2C_ACK_ENABLE;
 	I2C_Handle.Config.I2C_DeviceAddress=0x17;
 	I2C_Handle.Config.I2C_FMDutyCycle=I2C_FM_DUTY_2;
 	I2C_Handle.Config.I2C_SCL_SPEED=I2C_SCL_SPEED_SM;
+
+	I2C1_InterruptEnable();
+	I2C1_InterruptPriority(1);
 	I2C_Init(&I2C_Handle);
 	I2C1_GPIOInit();
+
 
 	while(1)
 	{
 		while(!ReadFromInputPin(Handle.GPIOx, 0));
 		for(int i=0;i<=200000;i++);
-		I2C_master_senddata(I2C_Handle.I2Cx, TxBUFFER,strlen((char*)TxBUFFER), targetaddr,I2C_REP_START_ENABLE);
+		while(I2C_master_senddata_IT(&I2C_Handle, TxBUFFER,strlen((char*)TxBUFFER), targetaddr,I2C_REP_START_ENABLE)!=I2C_READY);
 		printf("DATA WAS SENT %s\n",TxBUFFER);
 
-		I2C_master_receivedata(I2C_Handle.I2Cx, RxBUFFER,request_datasize, targetaddr,I2C_REP_START_DISABLE);
-
+		while(I2C_master_receivedata_IT(&I2C_Handle, RxBUFFER,request_datasize, targetaddr,I2C_REP_START_DISABLE)!=I2C_READY);
+		printf("RxCMPLT: %d\n",RxCmplt);
+		while(RxCmplt!=SET);
 		RxBUFFER[request_datasize]='\0';
-		printf("Data Received: %s", RxBUFFER);
-
+		printf("Data Received: %s\n", RxBUFFER);
+		RxCmplt=RESET;
 	}
 }
+
+void I2C_AppEventCallback(I2C_Handle_t* pHandle,uint8_t Event)
+{
+	if(Event==I2C_EV_RX_CMPLT)
+	{
+		printf("RX COMPLETE\n");
+		RxCmplt=SET;
+	}else if(Event==I2C_EV_TX_CMPLT)
+	{
+		printf("TX COMPLETE\n");
+	}else if(Event==I2C_ERROR_AF)
+	{
+		printf("ACK FAILED\n");
+		if(pHandle->TxRxState==I2C_BUSY_RX)
+		{
+			I2C_CloseReceiveData(pHandle);
+			I2C_GenerateStopCondition(pHandle->I2Cx);
+		}else if(pHandle->TxRxState==I2C_BUSY_TX)
+		{
+			I2C_CloseSendData(pHandle);
+			I2C_GenerateStopCondition(pHandle->I2Cx);
+		}
+	}else if(Event==I2C_ERROR_ARLO)
+	{
+		printf("ARBITRATION LOSS\n");
+		if(pHandle->TxRxState==I2C_BUSY_RX)
+		{
+			I2C_CloseReceiveData(pHandle);
+			I2C_GenerateStopCondition(pHandle->I2Cx);
+		}else if(pHandle->TxRxState==I2C_BUSY_TX)
+		{
+			I2C_CloseSendData(pHandle);
+			I2C_GenerateStopCondition(pHandle->I2Cx);
+		}
+	}else if(Event==I2C_ERROR_BERR)
+	{
+		printf("BUS ERROR\n");
+		if(pHandle->TxRxState==I2C_BUSY_RX)
+		{
+			I2C_CloseReceiveData(pHandle);
+			I2C_GenerateStopCondition(pHandle->I2Cx);
+		}else if(pHandle->TxRxState==I2C_BUSY_TX)
+		{
+			I2C_CloseSendData(pHandle);
+			I2C_GenerateStopCondition(pHandle->I2Cx);
+		}
+	}else if(Event==I2C_ERROR_OVR)
+	{
+		printf("OVERRUN ERROR\n");
+		if(pHandle->TxRxState==I2C_BUSY_RX)
+		{
+			I2C_CloseReceiveData(pHandle);
+			I2C_GenerateStopCondition(pHandle->I2Cx);
+		}else if(pHandle->TxRxState==I2C_BUSY_TX)
+		{
+			I2C_CloseSendData(pHandle);
+			I2C_GenerateStopCondition(pHandle->I2Cx);
+		}
+	}else if(Event==I2C_ERROR_TIMEOUT)
+	{
+		printf("TIMEOUT ERROR\n");
+		if(pHandle->TxRxState==I2C_BUSY_RX)
+		{
+			I2C_CloseReceiveData(pHandle);
+			I2C_GenerateStopCondition(pHandle->I2Cx);
+		}else if(pHandle->TxRxState==I2C_BUSY_TX)
+		{
+			I2C_CloseSendData(pHandle);
+			I2C_GenerateStopCondition(pHandle->I2Cx);
+		}
+	}
+}
+
+void	I2C1_EV_IRQHandler()
+{
+	I2C_EV_IRQHandling (&I2C_Handle);
+}
+void	I2C1_ER_IRQHandler()
+{
+	I2C_ER_IRQHandling (&I2C_Handle);
+}
+

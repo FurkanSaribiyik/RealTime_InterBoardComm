@@ -53,6 +53,15 @@ typedef struct{
 typedef struct{
 	I2C_Regdef_t* I2Cx;
 	I2C_Config_t Config;
+	//interrupt related operators
+	uint8_t *pTxBuffer;
+	uint8_t *pRxBuffer;
+	uint32_t TxLen;
+	uint32_t RxLen;
+	uint8_t TxRxState;
+	uint8_t SlaveAddr;
+	uint32_t RxSize;
+	uint8_t RepStart;
 }I2C_Handle_t;
 
 #define I2C_SCL_SPEED_SM 100000U
@@ -81,6 +90,10 @@ typedef struct{
 #define I2C_CR1_STOP 9
 #define I2C_CR1_ACK 10
 
+#define I2C_CR2_ITERREN 8
+#define I2C_CR2_ITEVTEN 9
+#define I2C_CR2_ITBUFEN 10
+
 #define I2C_SR1_FLAG_SB (1<<0)
 #define I2C_SR1_FLAG_ADDR (1<<1)
 #define I2C_SR1_FLAG_BTF (1<<2)
@@ -96,18 +109,29 @@ typedef struct{
 #define I2C_SR1_FLAG_TIMEOUT (1<<14)
 #define I2C_SR1_FLAG_SMBALERT (1<<15)
 
-#define I2C_SR2_FLAG_MSL (1<<16)U
-#define I2C_SR2_FLAG_BUSY (1<<17)U
-#define I2C_SR2_FLAG_TRA (1<<18)U
-#define I2C_SR2_FLAG_GENCALL (1<<20)U
-#define I2C_SR2_FLAG_SMBDEFAULT (1<<21)U
-#define I2C_SR2_FLAG_SMBHOST (1<<22)U
-#define I2C_SR2_FLAG_DUALF (1<<23)U
-#define I2C_SR2_FLAG_PEC (FF<<24)U
+#define I2C_SR2_FLAG_MSL (1<<16)
+#define I2C_SR2_FLAG_BUSY (1<<17)
+#define I2C_SR2_FLAG_TRA (1<<18)
+#define I2C_SR2_FLAG_GENCALL (1<<20)
+#define I2C_SR2_FLAG_SMBDEFAULT (1<<21)
+#define I2C_SR2_FLAG_SMBHOST (1<<22)
+#define I2C_SR2_FLAG_DUALF (1<<23)
+#define I2C_SR2_FLAG_PEC (FF<<24)
 
 #define I2C_REP_START_DISABLE DISABLE
 #define I2C_REP_START_ENABLE ENABLE
 
+#define I2C_READY 0
+#define I2C_BUSY_TX 1
+#define I2C_BUSY_RX 2
+
+#define I2C_EV_TX_CMPLT 0
+#define I2C_EV_RX_CMPLT 1
+#define I2C_ERROR_BERR  3
+#define I2C_ERROR_ARLO  4
+#define I2C_ERROR_AF    5
+#define I2C_ERROR_OVR   6
+#define I2C_ERROR_TIMEOUT 7
 
 void I2C_PeriClockControl(I2C_Regdef_t *pI2Cx, uint8_t ENORDI);
 void I2C_Init(I2C_Handle_t* pHandle);
@@ -116,9 +140,23 @@ void I2C_DeInit(I2C_Regdef_t *pI2Cx);
 void I2C_master_senddata(I2C_Regdef_t* pI2Cx, uint8_t *pTxBuffer,uint32_t len, uint8_t SlaveAddr,uint8_t RepStart);
 void I2C_master_receivedata(I2C_Regdef_t* pI2Cx, uint8_t *pRxBuffer,uint32_t len, uint8_t SlaveAddr,uint8_t RepStart);
 
-uint8_t I2C_getflag_status(I2C_Regdef_t* pI2Cx,uint32_t Flagname);
+void I2C1_InterruptEnable(void);
+void I2C1_InterruptDisable(void);
 
-void I2C_AppEventCallback(I2C_Handle_t* pHandle);
+void I2C1_InterruptPriority(uint8_t Priority);
+
+uint8_t I2C_master_senddata_IT(I2C_Handle_t* pHandle, uint8_t *pTxBuffer,uint32_t len, uint8_t SlaveAddr,uint8_t RepStart);
+uint8_t I2C_master_receivedata_IT(I2C_Handle_t* pHandle, uint8_t *pRxBuffer,uint32_t len, uint8_t SlaveAddr,uint8_t RepStart);
+
+void I2C_EV_IRQHandling (I2C_Handle_t* pHandle);
+void I2C_ER_IRQHandling (I2C_Handle_t* pHandle);
+
+
+void I2C_AppEventCallback(I2C_Handle_t* pHandle,uint8_t Event);
+
+void I2C_CloseSendData(I2C_Handle_t* pHandle);
+void I2C_CloseReceiveData(I2C_Handle_t* pHandle);
+void I2C_GenerateStopCondition(I2C_Regdef_t* pI2Cx);
 
 void I2C1_GPIOInit(void);
 void I2C1_GPIODeInit(void);
