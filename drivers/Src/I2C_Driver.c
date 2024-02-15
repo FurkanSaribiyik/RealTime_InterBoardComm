@@ -21,7 +21,6 @@ static void I2C_TxEIRQHandler(I2C_Handle_t* pHandle);
 static void I2C_RxNEIRQHandler(I2C_Handle_t* pHandle);
 
 
-
 static void I2C_HandleACK(I2C_Regdef_t* pI2Cx, uint8_t ENORDI)
 {
 	if(ENORDI==ENABLE)
@@ -98,9 +97,11 @@ static void I2C_TxEIRQHandler(I2C_Handle_t* pHandle)
 static void I2C_RxNEIRQHandler(I2C_Handle_t* pHandle)
 {
 	//handle RxNE condition
-	if(I2C_GetFlagStatus(pHandle->I2Cx,I2C_SR2_FLAG_MSL))	//Check for master mode
-	{if(pHandle->TxRxState==I2C_BUSY_RX)
-		{if(pHandle->RxSize==1)
+	if(I2C_GetFlagStatus(pHandle->I2Cx,I2C_SR2_FLAG_MSL))
+	{
+	if(pHandle->TxRxState==I2C_BUSY_RX)
+		{
+			if(pHandle->RxSize==1)
 			{
 				*pHandle->pRxBuffer=pHandle->I2Cx->I2C_DR;
 				pHandle->pRxBuffer++;
@@ -116,13 +117,17 @@ static void I2C_RxNEIRQHandler(I2C_Handle_t* pHandle)
 				pHandle->pRxBuffer++;
 				pHandle->RxLen--;
 			}if(pHandle->RxLen==0)
-			{if(pHandle->RepStart==I2C_REP_START_DISABLE)
-				{I2C_GenerateStopCondition(pHandle->I2Cx);}
-				I2C_CloseReceiveData(pHandle);
-				I2C_AppEventCallback(pHandle,I2C_EV_RX_CMPLT);
+			{
+				if(pHandle->RepStart==I2C_REP_START_DISABLE)
+					{I2C_GenerateStopCondition(pHandle->I2Cx);}
+					I2C_CloseReceiveData(pHandle);
+					I2C_AppEventCallback(pHandle,I2C_EV_RX_CMPLT);
 			}
 		}
 	}
+
+
+
 }
 
 void I2C_CloseSendData(I2C_Handle_t* pHandle)
@@ -364,7 +369,7 @@ void I2C1_GPIOInit(void)	//Sets PB7 and PB6 as SDA and SCL for I2C1 relatively
 	pHandle.Config.GPIO_Mode=GPIO_MODE_ALT_FUNC;
 	pHandle.Config.GPIO_OutputType=GPIO_OTYPE_OD;
 	pHandle.Config.GPIO_OutputSpeed=GPIO_OSPEED_HIGH;
-	pHandle.Config.GPIO_PUPD=GPIO_PUPD_PU;
+	pHandle.Config.GPIO_PUPD=GPIO_PUPD_NO_PUPD;
 	pHandle.Config.GPIO_AlternateFunc=GPIO_ALT_FUNC4;
 	GPIO_PeriClockControl(pHandle.GPIOx, ENABLE);
 	GPIO_Init(&pHandle);
@@ -493,6 +498,7 @@ void I2C_EV_IRQHandling (I2C_Handle_t* pHandle)
 		}
 
 		I2C_ClearAddrFlag(pHandle->I2Cx);
+		while(I2C_GetFlagStatus(pHandle->I2Cx, I2C_SR1_FLAG_ADDR));
 	}
 	temp3=pHandle->I2Cx->I2C_SR1&(I2C_SR1_FLAG_BTF);
 	if(temp1&&temp3)
