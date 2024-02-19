@@ -10,6 +10,8 @@
 
 #include <stdint.h>
 
+#define HSI_CLK 16000000U
+
 #define DISABLE 0
 #define ENABLE 1
 

@@ -11,7 +11,6 @@
 #include "GPIO_driver.h"
 #include <string.h>
 
-#define HSI_CLK 16000000U
 #define APB1_CLK HSI_CLK
 
 #define I2C1_BASEADDR 0x40005400U

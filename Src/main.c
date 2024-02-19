@@ -19,6 +19,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "GPIO_driver.h"
+#include "RealtimeLib.h"
 
 uint8_t TxBUFFER[]="I2C TX FUNCTIONALITY";
 uint8_t RxBUFFER[128];
@@ -33,6 +34,13 @@ uint8_t TxCmplt=RESET;
 uint8_t Handshake=RESET;
 int main(void)
 {
+	//init_LEDs();
+	init_scheduler_stack(SCHED_STACK_START);
+	//init_task_stacks();
+	switch_to_PSP();
+	//init_systick_timer(TICK_HZ);
+
+	tic();
 	Handle.GPIOx=GPIOA;
 	Handle.Config.GPIO_PinNumber=0;
 	Handle.Config.GPIO_Mode=GPIO_MODE_INPUT;
@@ -50,8 +58,15 @@ int main(void)
 	I2C1_InterruptPriority(1);
 	I2C_Init(&I2C_Handle);
 	I2C1_GPIOInit();
-	volatile uint8_t dummy=0;
-
+	unsigned int time=toc();
+	printf("time elapsed in ms : %d \n",time);
+	//volatile uint8_t dummy=0;
+	while(1)
+	{
+		time=toc();
+		printf("time elapsed in ms : %d \n",time/1000);
+	}
+/*
 		if(Handshake==RESET)
 		{
 			while(Handshake==RESET)
@@ -124,6 +139,7 @@ int main(void)
 		}
 
 	}
+*/
 }
 
 void I2C_AppEventCallback(I2C_Handle_t* pHandle,uint8_t Event)
@@ -200,6 +216,52 @@ void I2C_AppEventCallback(I2C_Handle_t* pHandle,uint8_t Event)
 		}
 	}
 }
+
+void task1(void)
+{
+	while(1)
+	{
+		turn_on_LED(GREEN_LED);
+		task_delay(500);
+		turn_off_LED(GREEN_LED);
+		task_delay(500);
+	}
+}
+void task2(void)
+{
+	while(1)
+	{
+		turn_on_LED(ORANGE_LED);
+		task_delay(1000);
+		turn_off_LED(ORANGE_LED);
+		task_delay(1000);
+	}
+}
+
+void task3(void)
+{
+	while(1)
+	{
+		turn_on_LED(RED_LED);
+		task_delay(2000);
+		turn_off_LED(RED_LED);
+		task_delay(2000);
+	}
+}
+
+void task4(void)
+{
+	while(1)
+	{
+		turn_on_LED(BLUE_LED);
+		task_delay(250);
+		turn_off_LED(BLUE_LED);
+		task_delay(250);
+	}
+}
+
+
+
 
 void	I2C1_EV_IRQHandler()
 {
