@@ -73,12 +73,12 @@ void update_global_tick_count(void)
 	{
 		volatile uint32_t subt=(uint32_t)0xBFFFFFFFF;
 		g_tick_count-=subt;
-		/*
+
 		for(int i=1;i<NUMBEROF_TASKS;i++)
 		{
 			user_tasks[i].block_count-=subt;
 		}
-		*/
+
 		g_tick_count++;
 	}
 	else
@@ -104,8 +104,8 @@ void unblock_tasks(void)
 void SysTick_Handler(void)
 {
 	update_global_tick_count();
-//	unblock_tasks();
-//	schedule_pendsv();
+	unblock_tasks();
+	schedule_pendsv();
 }
 
 void tic(void)
@@ -141,7 +141,6 @@ __attribute((naked)) void PendSV_Handler(void)
 uint32_t get_psp_value(void)
 {
 	return user_tasks[current_task].psp_val;
-	//return SCHED_STACK_START;
 }
 void save_psp_value(uint32_t psp_addr)
 {
@@ -150,16 +149,19 @@ void save_psp_value(uint32_t psp_addr)
 
 __attribute((naked)) void switch_to_PSP(void)
 {
-	/*
+
 	__asm volatile ("PUSH {LR}");			//Save the return value to jump to another function
 	__asm volatile ("BL get_psp_value");	//Get PSP of the current stack and store it in R0
 	__asm volatile ("POP {LR}");
 	__asm volatile ("MSR PSP,R0");			//PSP value is loaded into PSP register
-	*/
 
+
+	/*
 	__asm volatile (".equ SRAM_END, (0x20000000+(128*1024))");
 	__asm volatile ("LDR R0,=SRAM_END");
 	__asm volatile ("MSR PSP,R0");			//Setting PSP to the top of the stack
+	*/
+
 	__asm volatile ("MOV R0,#0X02");
 	__asm volatile ("MSR CONTROL,R0");		//Set main SP as PSP
 	__asm volatile ("BX LR");		//Return to main

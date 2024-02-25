@@ -10,7 +10,13 @@
 
 #include <stdint.h>
 
+
+#define __vo volatile
+#define __weak __attribute__((weak))
+
 #define HSI_CLK 16000000U
+#define APB1_CLK HSI_CLK
+#define APB2_CLK HSI_CLK
 
 #define DISABLE 0
 #define ENABLE 1
@@ -25,7 +31,47 @@
 #define NVIC_ICER_BASEADDR 0XE000E180
 #define NVIC_IPR_BASEADDR 0xE000E400
 
+#define NO_PR_BITS_IMPLEMENTED  4
+
+/*
+ * ARM Cortex Mx Processor NVIC ISERx Register Addresses
+ */
+#define NVIC_ISER0      ( (__vo uint32_t*)0xE000E100 )
+#define NVIC_ISER1      ( (__vo uint32_t*)0xE000E104 )
+#define NVIC_ISER2      ( (__vo uint32_t*)0xE000E108 )
+#define NVIC_ISER3      ( (__vo uint32_t*)0xE000E10C )
+#define NVIC_ISER4      ( (__vo uint32_t*)0xE000E110 )
+#define NVIC_ISER5      ( (__vo uint32_t*)0xE000E114 )
+#define NVIC_ISER6      ( (__vo uint32_t*)0xE000E118 )
+#define NVIC_ISER7      ( (__vo uint32_t*)0xE000E11C )
+
+
+/*
+ * ARM Cortex Mx Processor NVIC ICERx Register Addresses
+ */
+#define NVIC_ICER0      ( (__vo uint32_t*)0XE000E180 )
+#define NVIC_ICER1      ( (__vo uint32_t*)0XE000E184 )
+#define NVIC_ICER2      ( (__vo uint32_t*)0XE000E188 )
+#define NVIC_ICER3      ( (__vo uint32_t*)0XE000E18C )
+#define NVIC_ICER4      ( (__vo uint32_t*)0XE000E190 )
+#define NVIC_ICER5      ( (__vo uint32_t*)0XE000E194 )
+#define NVIC_ICER6      ( (__vo uint32_t*)0XE000E198 )
+#define NVIC_ICER7      ( (__vo uint32_t*)0XE000E19C )
+
+
+
+/*
+ * ARM Cortex Mx Processor Priority Register Address Calculation
+ */
+#define NVIC_PR_BASE_ADDR   ( (__vo uint32_t*)0XE000E400 )
+
 #define AHB1_BASEADDR 0x40020000U
+
+#define RCC_APB1_ENR (RCC_BASEADDR+0X40)
+#define RCC_APB1_RESET (RCC_BASEADDR+0X20)
+
+#define RCC_APB2_ENR (RCC_BASEADDR+0X44)
+#define RCC_APB2_RESET (RCC_BASEADDR+0X24)
 
 #define GPIOA_BASEADDR 0x40020000U
 #define GPIOB_BASEADDR 0x40020400U

@@ -17,10 +17,6 @@
 #define I2C2_BASEADDR 0x40005800U
 #define I2C3_BASEADDR 0x40005C00U
 
-#define RCC_APB1_ENR (RCC_BASEADDR+0X40)
-#define RCC_APB1_RESET (RCC_BASEADDR+0X20)
-
-
 #define I2C1_PCLK_EN (*(uint32_t*)(RCC_APB1_ENR)|=(1<<21))
 #define I2C2_PCLK_EN (*(uint32_t*)(RCC_APB1_ENR)|=(1<<22))
 #define I2C3_PCLK_EN (*(uint32_t*)(RCC_APB1_ENR)|=(1<<23))

@@ -34,19 +34,22 @@ uint8_t TxCmplt=RESET;
 uint8_t Handshake=RESET;
 int main(void)
 {
-	//init_LEDs();
+	/*
+	init_LEDs();
 	init_scheduler_stack(SCHED_STACK_START);
-	//init_task_stacks();
+	init_task_stacks();
 	switch_to_PSP();
-	//init_systick_timer(TICK_HZ);
+	init_systick_timer(TICK_HZ);
+	task1();
+	*/
 
-	tic();
 	Handle.GPIOx=GPIOA;
 	Handle.Config.GPIO_PinNumber=0;
 	Handle.Config.GPIO_Mode=GPIO_MODE_INPUT;
 	Handle.Config.GPIO_OutputSpeed=GPIO_OSPEED_HIGH;
 	Handle.Config.GPIO_PUPD=GPIO_PUPD_PD;
 	GPIO_Init(&Handle);
+
 
 	I2C_Handle.I2Cx=I2C1;
 	I2C_Handle.Config.I2C_ACKControl=I2C_ACK_ENABLE;
@@ -58,15 +61,8 @@ int main(void)
 	I2C1_InterruptPriority(1);
 	I2C_Init(&I2C_Handle);
 	I2C1_GPIOInit();
-	unsigned int time=toc();
-	printf("time elapsed in ms : %d \n",time);
-	//volatile uint8_t dummy=0;
-	while(1)
-	{
-		time=toc();
-		printf("time elapsed in ms : %d \n",time/1000);
-	}
-/*
+	volatile uint8_t dummy=0;
+
 		if(Handshake==RESET)
 		{
 			while(Handshake==RESET)
@@ -139,7 +135,7 @@ int main(void)
 		}
 
 	}
-*/
+
 }
 
 void I2C_AppEventCallback(I2C_Handle_t* pHandle,uint8_t Event)
