@@ -6,20 +6,13 @@
  */
 
 #include <USART_Driver.h>
-/************************************************************
- * @fn      		  - USART_SetBaudRate
+/****************************************************
+ * @fn   			-USART_SetBaudRate
  *
- * @brief             -
  *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
+ * */
 
- */
+
 void USART_SetBaudRate(USART_RegDef_t *pUSARTx, uint32_t BaudRate)
 {
 
@@ -176,16 +169,7 @@ void USART_Init(USART_Handle_t *pUSARTHandle)
 /*********************************************************************
  * @fn      		  - USART_EnableOrDisable
  *
- * @brief             -
  *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
  */
 void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t Cmd)
 {
@@ -204,16 +188,7 @@ void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t Cmd)
 /*********************************************************************
  * @fn      		  - I2C_PeriClockControl
  *
- * @brief             -
  *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
  */
 void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
 {
@@ -270,16 +245,7 @@ void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi)
 /*********************************************************************
  * @fn      		  - USART_GetFlagStatus
  *
- * @brief             -
  *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
  */
 uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint8_t StatusFlagName)
 {
@@ -294,16 +260,7 @@ uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx, uint8_t StatusFlagName)
 /*********************************************************************
  * @fn      		  - USART_SendData
  *
- * @brief             -
  *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
  */
 void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t Len)
 {
@@ -356,16 +313,7 @@ void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t L
 /*********************************************************************
  * @fn      		  - USART_ReceiveData
  *
- * @brief             -
  *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
  */
 
 void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t Len)
@@ -432,16 +380,7 @@ void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_
 /*********************************************************************
  * @fn      		  - USART_SendDataWithIT
  *
- * @brief             -
  *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
  */
 uint8_t USART_SendDataIT(USART_Handle_t *pUSARTHandle,uint8_t *pTxBuffer, uint32_t Len)
 {
@@ -470,16 +409,8 @@ uint8_t USART_SendDataIT(USART_Handle_t *pUSARTHandle,uint8_t *pTxBuffer, uint32
 /*********************************************************************
  * @fn      		  - USART_ReceiveDataWithIT
  *
- * @brief             -
  *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
  *
- * @return            -
- *
- * @Note              -
-
  */
 uint8_t USART_ReceiveDataIT(USART_Handle_t *pUSARTHandle,uint8_t *pRxBuffer, uint32_t Len)
 {
@@ -505,18 +436,7 @@ uint8_t USART_ReceiveDataIT(USART_Handle_t *pUSARTHandle,uint8_t *pRxBuffer, uin
 /*********************************************************************
  * @fn      		  - USART_ClearFlag
  *
- * @brief             -
  *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              - Applicable to only USART_CTS_FLAG , USART_LBD_FLAG
- * USART_TC_FLAG,USART_TC_FLAG flags
- *
-
  */
 
 void USART_ClearFlag(USART_RegDef_t *pUSARTx, uint16_t StatusFlagName)
@@ -528,16 +448,7 @@ void USART_ClearFlag(USART_RegDef_t *pUSARTx, uint16_t StatusFlagName)
 /*********************************************************************
  * @fn      		  - USART_IRQInterruptConfig
  *
- * @brief             -
  *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
  */
 void USART_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 {
@@ -583,16 +494,8 @@ void USART_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 /*********************************************************************
  * @fn      		  - USART_IRQPriorityConfig
  *
- * @brief             -
  *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
  *
- * @return            -
- *
- * @Note              -
-
  */
 void USART_IRQPriorityConfig(uint8_t IRQNumber,uint32_t IRQPriority)
 {
@@ -609,16 +512,7 @@ void USART_IRQPriorityConfig(uint8_t IRQNumber,uint32_t IRQPriority)
 /*********************************************************************
  * @fn      		  - USART_IRQHandler
  *
- * @brief             -
  *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
  */
 void USART_IRQHandling(USART_Handle_t *pUSARTHandle)
 {
@@ -870,8 +764,6 @@ void USART_IRQHandling(USART_Handle_t *pUSARTHandle)
 /*************************Check for Error Flag ********************************************/
 
 //Noise Flag, Overrun error and Framing Error in multibuffer communication
-//We dont discuss multibuffer communication in this course. please refer to the RM
-//The blow code will get executed in only if multibuffer mode is used.
 
 	temp2 =  pUSARTHandle->pUSARTx->CR3 & ( 1 << USART_CR3_EIE) ;
 
@@ -912,16 +804,7 @@ void USART_IRQHandling(USART_Handle_t *pUSARTHandle)
 /*********************************************************************
  * @fn      		  - USART_ApplicationEventCallback
  *
- * @brief             -
  *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -
- *
- * @Note              -
-
  */
 __attribute((weak))void USART_ApplicationEventCallback(USART_Handle_t *pUSARTHandle,uint8_t event)
 {

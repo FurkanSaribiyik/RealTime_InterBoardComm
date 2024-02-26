@@ -104,6 +104,7 @@ typedef struct
 #define USART_SR_LBD        			8
 #define USART_SR_CTS        			9
 
+/****************************** Misc***********************/
 #define PERIPH_BASEADDR 						0x40000000U
 #define APB1PERIPH_BASEADDR						PERIPH_BASEADDR
 #define APB2PERIPH_BASEADDR						0x40010000U
@@ -138,6 +139,12 @@ typedef struct
 #define UART5_PCCK_DIS (*(uint32_t*)(RCC_APB1_RESET)&=~(1<<20))
 #define USART6_PCCK_DIS (*(uint32_t*)(RCC_APB2_RESET)&=~(1<<5))
 
+#define USART1_IRQ_NO 37
+#define USART2_IRQ_NO 38
+#define USART3_IRQ_NO 39
+#define UART4_IRQ_NO 52
+#define UART5_IRQ_NO 53
+#define USART6_IRQ_NO 71
 
 /*
  * Handle structure for  U(S)ARTx peripheral

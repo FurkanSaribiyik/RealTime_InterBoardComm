@@ -17,8 +17,8 @@
 
 #define T1_STACK_START SRAM_END
 #define T2_STACK_START ((SRAM_END) -(1*SIZE_TASK_STACK))
-#define T3_STACK_START ((SRAM_END) -(2*SIZE_TASK_STACK))
-#define T4_STACK_START ((SRAM_END) -(3*SIZE_TASK_STACK))
+//#define T3_STACK_START ((SRAM_END) -(2*SIZE_TASK_STACK))
+//#define T4_STACK_START ((SRAM_END) -(3*SIZE_TASK_STACK))
 #define IDLE_STACK_START ((SRAM_END) -(4*SIZE_TASK_STACK))
 #define SCHED_STACK_START ((SRAM_END) -(5*SIZE_TASK_STACK))
 
@@ -28,7 +28,7 @@
 
 #define TASK_READY_STATE 0X00
 #define TASK_BLOCKED_STATE 0XFF
-#define NUMBEROF_TASKS 5
+#define NUMBEROF_TASKS 3
 
 #define PENDSV_REG 0xE000ED04U
 
@@ -61,6 +61,7 @@ uint32_t toc(void);
 extern uint32_t g_tick_count;
 extern uint8_t current_task;
 extern uint32_t timer_now;
+extern uint8_t task_needs_stay;
 
 typedef struct {
 	uint32_t psp_val;

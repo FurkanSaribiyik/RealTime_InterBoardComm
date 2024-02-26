@@ -47,20 +47,24 @@ void turn_off_LED(uint8_t led)
 
 void set_next_task(void)
 {
+	if(task_needs_stay==0)
+	{
 	int state=TASK_BLOCKED_STATE;
-	for(int i=0;i<(NUMBEROF_TASKS);i++)
-	{
-		current_task++;
-		current_task%=NUMBEROF_TASKS;
-		state=user_tasks[current_task].current_state;
-		if((state==TASK_READY_STATE)&&(current_task!=0))
+		for(int i=0;i<(NUMBEROF_TASKS);i++)
 		{
-			break;
+			current_task++;
+			current_task%=NUMBEROF_TASKS;
+			state=user_tasks[current_task].current_state;
+			if((state==TASK_READY_STATE)&&(current_task!=0))
+			{
+				break;
+			}
 		}
-	}
-	if(state!=TASK_READY_STATE)
-	{
-		current_task=0;
+		if(state!=TASK_READY_STATE)
+		{
+			current_task=0;
+		}
+
 	}
 }
 
@@ -186,8 +190,8 @@ void init_task_stacks(void)
 	user_tasks[0].task_handler=idle_task;
 	user_tasks[1].task_handler=task1;
 	user_tasks[2].task_handler=task2;
-	user_tasks[3].task_handler=task3;
-	user_tasks[4].task_handler=task4;
+	//user_tasks[3].task_handler=task3;
+	//user_tasks[4].task_handler=task4;
 
 	uint32_t *pPSP;
 	for(int i=0;i<NUMBEROF_TASKS;i++)		//the stackframe of task1 will be loaded when the systick interrupt triggers

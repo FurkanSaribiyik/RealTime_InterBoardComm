@@ -194,4 +194,5 @@ void WriteToOutputPin(GPIO_Regdef_t *pGPIOx,uint8_t PinNumber, uint8_t val);
 void WriteToOutputPort(GPIO_Regdef_t *pGPIOx,uint16_t val);
 
 #include "i2c_driver.h"
+#include "USART_driver.h"
 #endif /* GPIO_DRIVER_H_ */
